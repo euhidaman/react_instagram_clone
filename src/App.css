@@ -6,7 +6,9 @@
   background-color: #fafafa;
 }
 
-.app_header{
+.app__header{
   background-color: white;
+  padding: 20px;
+  border-bottom: 1px solid lightgray;
   object-fit: contain;
 }

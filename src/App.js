@@ -1,5 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
+import Post from "./Post";
 
 function App() {
   return (
@@ -10,6 +10,9 @@ function App() {
           alt=""
         />
       </div>
+      <Post />
+      <Post />
+      <Post />
     </div>
   );
 }
