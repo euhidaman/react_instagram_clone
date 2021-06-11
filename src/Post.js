@@ -2,24 +2,24 @@ import React from 'react';
 import './Post.css';
 import Avatar from "@material-ui/core/Avatar";
 
-function Post() {
+function Post({username, caption, imgUrl}) {
     return (
         <div className="post">
             
             <div className="post__header">
                 <Avatar 
-                    alt="euhidaman"
+                    alt={username}
                     src="/static/images/avatar/1.jpg" 
                     className="post__avatar"
                 />
-                <h3>euhidaman</h3>
+                <h3>{username}</h3>
             </div>
 
             <img className="post__image"
-            src="http://blog.addthiscdn.com/wp-content/uploads/2014/11/addthis-react-flux-javascript-scaling.png" 
+            src={imgUrl} 
             alt="reactjs" 
             />
-            <h4 className="post__text"><strong>euhidaman</strong>: Learning React!!</h4>
+            <h4 className="post__text"><strong>{username}</strong>: {caption} </h4>
         </div>
     )
 }
