@@ -1,14 +1,14 @@
+/* eslint-disable no-sequences */
 import { useEffect, useState } from 'react';
 import './App.css';
-import { db } from './firebase';
+import { db, auth } from './firebase';
 import Post from "./Post";
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
-import { Button } from '@material-ui/core';
-
+import { Button,Input } from '@material-ui/core';
 
 function getModalStyle() {
-  const top = 100;
+  const top = 50;
   const left = 50;
 
   return {
@@ -36,6 +36,9 @@ function App() {
 
   const [posts, setPosts] = useState([]);
   const [open, setOpen] = useState(false);
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   useEffect(() => {
     db.collection('posts').onSnapshot(
@@ -55,18 +58,30 @@ function App() {
     setOpen(true);
   };
 
+  const signUp = (event) => {
+      event.preventDefault();
+
+      auth.createUserWithEmailAndPassword(email, password).catch((error) => alert(error.message));
+  };
+
   return (
 
     <div className="app">
 
       <Modal open={open} onClose={handleClose} >
         <div style={modalStyle} className={classes.paper}>
-          <center>
-            <img className="app__headerImage"
-              src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
-              alt=""
-            />
-          </center>
+          <form className="app__signup">
+            <center>
+              <img className="app__headerImage"
+                src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
+                alt=""
+              />
+              <Input placeholder="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+              <Input placeholder="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input placeholder="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />             
+              <Button disabled={!username, !email, !password} type="submit" variant="contained" color="primary" onClick={signUp}>Sign Up</Button>
+            </center>
+          </form>         
         </div>
       </Modal>
 
