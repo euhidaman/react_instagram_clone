@@ -39,6 +39,7 @@ function App() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     db.collection('posts').onSnapshot(
@@ -49,6 +50,41 @@ function App() {
       }
     )
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      if(authUser){
+        // Code when user is logged in
+        console.log(authUser);
+        setUser(authUser); // this is persistent, so even if u refresh, you are always logged in
+
+          // if (authUser.displayName) {
+          //   // if old user exists, don't update username in firebase backend
+          // } else {
+          //   // if new user joined, update username for firebase backend
+          //   return authUser.updateProfile({
+          //     displayName: username, //
+          //   });
+          // }
+
+      }
+      else{
+        // code when user is logged out
+        setUser(null);
+      }
+    })
+    
+    return () => {
+      /* Here 'unsubscribe' is the code for firebase backend
+         Basically it prevents the page from creating any unnecessary actions in the backend, 
+         when some changes happens. For example -->if we are re-Logging in as a preveiously signed-up user
+         then, it will detach the firebase backend listener, that is being represented by 'unsubscribe'.
+         This is done to prevent duplicate users.
+      */
+      unsubscribe();
+    }
+
+  }, [user, username]);
 
   const handleClose = () => {
     setOpen(false);
@@ -61,7 +97,13 @@ function App() {
   const signUp = (event) => {
       event.preventDefault();
 
-      auth.createUserWithEmailAndPassword(email, password).catch((error) => alert(error.message));
+      auth.createUserWithEmailAndPassword(email, password)
+      .then((authUser) => {
+          return authUser.user.updateProfile({
+            displayName : username
+          })
+      })
+      .catch((error) => alert(error.message));
   };
 
   return (
