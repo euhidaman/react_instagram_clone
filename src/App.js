@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import { Button,Input } from '@material-ui/core';
 
+// 2:00:00
 function getModalStyle() {
   const top = 50;
   const left = 50;
@@ -34,6 +35,7 @@ function App() {
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
 
+  const [openSignIn, setOpenSignIn] = useState(false);
   const [posts, setPosts] = useState([]);
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState("");
@@ -57,16 +59,6 @@ function App() {
         // Code when user is logged in
         console.log(authUser);
         setUser(authUser); // this is persistent, so even if u refresh, you are always logged in
-
-          // if (authUser.displayName) {
-          //   // if old user exists, don't update username in firebase backend
-          // } else {
-          //   // if new user joined, update username for firebase backend
-          //   return authUser.updateProfile({
-          //     displayName: username, //
-          //   });
-          // }
-
       }
       else{
         // code when user is logged out
@@ -94,6 +86,14 @@ function App() {
     setOpen(true);
   };
 
+  const logOutAction = () => {
+    auth.signOut();
+  }
+
+  const signInAction = () => {
+    setOpenSignIn(true);
+  }
+
   const signUp = (event) => {
       event.preventDefault();
 
@@ -104,12 +104,20 @@ function App() {
           })
       })
       .catch((error) => alert(error.message));
+
+      setOpen(false);
   };
+
+  const signIn = (event) => {
+    event.preventDefault();
+    auth.signInWithEmailAndPassword(email, password).catch((error)=>alert(error.message));
+    setOpenSignIn(false);
+  }
 
   return (
 
     <div className="app">
-
+      {/* SignUp Modal */}
       <Modal open={open} onClose={handleClose} >
         <div style={modalStyle} className={classes.paper}>
           <form className="app__signup">
@@ -127,6 +135,23 @@ function App() {
         </div>
       </Modal>
 
+      {/* SignIn Modal */}
+      <Modal open={openSignIn} onClose={() => setOpenSignIn(false)} >
+        <div style={modalStyle} className={classes.paper}>
+          <form className="app__signup">
+            <center>
+              <img className="app__headerImage"
+                src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
+                alt=""
+              />
+              <Input placeholder="email" type="text" value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input placeholder="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+              <Button disabled={!email, !password} type="submit" variant="contained" color="primary" onClick={signIn}>Sign In</Button>
+            </center>
+          </form>
+        </div>
+      </Modal>
+
       <div className="app__header">
         <img className="app__headerImage"
           src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
@@ -134,7 +159,14 @@ function App() {
         />
       </div>
 
-      <Button onClick={handleOpen}>Sign Up</Button>
+      {user ? 
+      ( <Button onClick={logOutAction}>LogOut</Button> ) : 
+      ( <div className="app__loginContainer">
+          <Button onClick={signInAction}>Sign In</Button>
+          <Button onClick={handleOpen}>Sign Up</Button>
+        </div>
+       )
+      }
 
       {
         posts.map(({id, post}) => (
