@@ -6,8 +6,8 @@ import Post from "./Post";
 import { makeStyles } from '@material-ui/core/styles';
 import Modal from '@material-ui/core/Modal';
 import { Button,Input } from '@material-ui/core';
+import ImageUpload from './ImageUpload';
 
-// 2:00:00
 function getModalStyle() {
   const top = 50;
   const left = 50;
@@ -116,7 +116,10 @@ function App() {
 
   return (
 
-    <div className="app">
+    <div className="app container">
+
+    <ImageUpload />
+
       {/* SignUp Modal */}
       <Modal open={open} onClose={handleClose} >
         <div style={modalStyle} className={classes.paper}>
