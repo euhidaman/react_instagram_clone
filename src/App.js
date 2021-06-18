@@ -8,10 +8,20 @@ import Modal from '@material-ui/core/Modal';
 import { Button,Input } from '@material-ui/core';
 import ImageUpload from './ImageUpload';
 
-// 2:23:00
 function getModalStyle() {
   const top = 50;
   const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+function getTrialStyle() {
+  const top = 50;
+  const left = 75;
 
   return {
     top: `${top}%`,
@@ -31,10 +41,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const useUpload = makeStyles((theme) => ({
+  paper: {
+    position: 'absolute',
+    width: 500,
+    padding: theme.spacing(5, 10, 3),
+  },
+}));
+
 function App() {
 
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
+
+  const trial = useUpload();
+  const [trialStyle] = useState(getTrialStyle);
 
   const [openSignIn, setOpenSignIn] = useState(false);
   const [posts, setPosts] = useState([]);
@@ -43,6 +64,8 @@ function App() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+
+  const [uploadModal, setUploadModal] = useState(false);
 
   useEffect(() => {
     db.collection('posts').orderBy("timestamp", "desc").onSnapshot(
@@ -119,13 +142,6 @@ function App() {
 
     <div className="app container">
 
-    {user?.displayName ? (
-        <ImageUpload username={user.displayName} />
-    ): (
-      <h3>Sorry, please Login to Upload</h3>
-    )}
-    
-
       {/* SignUp Modal */}
       <Modal open={open} onClose={handleClose} >
         <div style={modalStyle} className={classes.paper}>
@@ -161,21 +177,41 @@ function App() {
         </div>
       </Modal>
 
+    {/* Upload Modal */}
+      <Modal open={uploadModal} onClose={() => setUploadModal(false)} >
+        <div style={trialStyle} className={trial.paper}>
+            <center>
+              {user?.displayName ? (
+                <ImageUpload username={user.displayName} />
+              ) : (
+                <h3>Sorry, please Login to Upload</h3>
+              )}
+            </center>
+        </div>
+      </Modal>
+
       <div className="app__header">
         <img className="app__headerImage"
           src="https://www.instagram.com/static/images/web/mobile_nav_type_logo.png/735145cfe0a4.png"
           alt=""
         />
+
+        {user ?
+          (<div>
+            <Button onClick={logOutAction}>LogOut</Button>
+            <Button onClick={() => setUploadModal(true)}>Upload</Button>
+          </div>
+          )
+          :
+          (<div className="app__loginContainer">
+            <Button onClick={signInAction}>Sign In</Button>
+            <Button onClick={handleOpen}>Sign Up</Button>
+          </div>
+          )
+        }
       </div>
 
-      {user ? 
-      ( <Button onClick={logOutAction}>LogOut</Button> ) : 
-      ( <div className="app__loginContainer">
-          <Button onClick={signInAction}>Sign In</Button>
-          <Button onClick={handleOpen}>Sign Up</Button>
-        </div>
-       )
-      }
+      
 
       {
         posts.map(({id, post}) => (

@@ -56,10 +56,12 @@ function ImageUpload({username}) {
     
     return (
         <div className="imageupload">
-            <progress value={progress} max="100" /><br />
-            <input type="file" onChange={handleChange} /><br/>
-            <Input type="text" placeholder="Caption..." onChange={e => setCaption(e.target.value)}/><br/>
-            <Button onClick={handleUpload} variant="contained" color="primary"> Upload </Button>
+            <center>
+                <progress value={progress} className="imageupload__progress" max="100" /><br />&emsp;&emsp;
+                <Input type="file" className="tab2" onChange={handleChange} /><br />
+                <Input type="text" placeholder="Caption..." onChange={e => setCaption(e.target.value)} /><br />
+                <Button onClick={handleUpload} variant="contained" color="primary"> Upload </Button>
+            </center>
         </div>
     )
 }
