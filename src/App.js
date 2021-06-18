@@ -8,6 +8,7 @@ import Modal from '@material-ui/core/Modal';
 import { Button,Input } from '@material-ui/core';
 import ImageUpload from './ImageUpload';
 
+// 2:23:00
 function getModalStyle() {
   const top = 50;
   const left = 50;
@@ -44,7 +45,7 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    db.collection('posts').onSnapshot(
+    db.collection('posts').orderBy("timestamp", "desc").onSnapshot(
       snapshot => {
         setPosts(snapshot.docs.map( doc => ({
           id: doc.id,
@@ -118,7 +119,12 @@ function App() {
 
     <div className="app container">
 
-    <ImageUpload />
+    {user?.displayName ? (
+        <ImageUpload username={user.displayName} />
+    ): (
+      <h3>Sorry, please Login to Upload</h3>
+    )}
+    
 
       {/* SignUp Modal */}
       <Modal open={open} onClose={handleClose} >
