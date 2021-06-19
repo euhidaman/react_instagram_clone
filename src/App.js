@@ -211,17 +211,18 @@ function App() {
         }
       </div>
 
-      
-
-      {
-        posts.map(({id, post}) => (
-          <Post key = {id}
-            username={post.username}
-            caption={post.caption}
-            imgUrl={post.imgUrl}
-          />
-        ))
-      }
+        <div className="app__posts">
+            {
+              posts.map(({ id, post }) => (
+                <Post key={id}
+                  postId={id}
+                  username={post.username}
+                  caption={post.caption}
+                  imgUrl={post.imgUrl}
+                />
+              ))
+            }
+        </div>
 
     </div>
   );
